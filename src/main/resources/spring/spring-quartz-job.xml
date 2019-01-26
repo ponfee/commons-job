@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  ">
+
+  <!-- 
+    SchedulerFactoryBean.initSchedulerFactory()
+  -->
+  <bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="configLocation" value="classpath:quartz.properties" />
+
+    <!-- org.quartz.jobStore.class: org.springframework.scheduling.quartz.LocalDataSourceJobStore -->
+    <property name="dataSource" ref="dataSource" />
+    <property name="transactionManager" ref="transactionManager" />
+
+    <!-- priority: schedulerName > beanName > org.quartz.scheduler.instanceName  -->
+    <property name="schedulerName" value="CLUSTERED-SCHED" />
+
+    <!-- 每台集群机器部署应用的时候会更新触发器-->
+    <property name="overwriteExistingJobs" value="true" />
+    <property name="applicationContextSchedulerContextKey" value="app-ctx-key" />
+
+    <!-- org.quartz.threadPool.class: org.springframework.scheduling.quartz.LocalTaskExecutorThreadPool -->
+    <property name="taskExecutor" ref="taskExecutor" />
+  </bean>
+
+  <bean id="quartzJobManager" class="code.ponfee.job.quartz.QuartzJobManager">
+    <constructor-arg index="0" ref="quartzScheduler" />
+    <constructor-arg index="1" value="CLUSTERED-GROUP" />
+  </bean>
+
+  <bean class="code.ponfee.job.service.impl.SchedJobServiceImpl">
+    <constructor-arg index="0" ref="quartzJobManager" />
+  </bean>
+
+
+  <!-- Used in: code.ponfee.job.quartz.QuartzJobExecutor#execute(JobExecutionContext) -->
+  <bean class="code.ponfee.job.spy.SpyNormalJobExecutor">
+    <constructor-arg index="0" ref="schedJobDao" />
+    <constructor-arg index="1" ref="schedJobCached" />
+  </bean>
+
+  <bean class="code.ponfee.job.quartz.QuartzJobInitializer" />
+
+</beans>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="code.ponfee.job.dao.mapper.SchedLogMapper">
+    <sql id="base_columns">
+        id,exec_server,is_success,is_manual_trigger,job_id,job_name,exec_params,
+        sched_time,exec_start_time,exec_end_time,exception,create_tm
+    </sql>
+
+    <insert id="batchInsert">
+        INSERT INTO t_sched_log (
+            exec_server,is_success,is_manual_trigger,job_id,job_name,exec_params,
+            sched_time,exec_start_time,exec_end_time,exception,create_tm
+        ) VALUES 
+        <foreach collection="list" item="o" index="index" separator=",">
+            (#{o.execServer},#{o.isSuccess},#{o.isManualTrigger},#{o.jobId},#{o.jobName},#{o.execParams},
+             #{o.schedTime},#{o.execStartTime},#{o.execEndTime},#{o.exception},#{o.createTm})
+        </foreach>
+    </insert>
+
+    <select id="query4list" resultType="code.ponfee.job.model.SchedLog">
+        SELECT <include refid="base_columns"/> FROM t_sched_log 
+        <where>
+            <if test="execServer!=null">exec_server=#{execServer}</if>
+            <if test="isSuccess!=null">AND is_success=#{isSuccess}</if>
+            <if test="isManualTrigger!=null">AND is_manual_trigger=#{isManualTrigger}</if>
+            <if test="jobId!=null">AND job_id=#{jobId}</if>
+            <if test="jobName!=null">AND job_name LIKE '%${jobName}%'</if>
+            <if test="beginTime!=null">AND create_tm>=#{beginTime}</if>
+            <if test="endTime!=null">AND create_tm&lt;=#{endTime}</if>
+        </where>
+        ORDER BY create_tm DESC 
+    </select>
+
+</mapper>

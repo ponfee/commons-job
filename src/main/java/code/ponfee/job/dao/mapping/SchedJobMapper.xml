@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="code.ponfee.job.dao.mapper.SchedJobMapper">
+
+    <sql id="base_columns">
+        id,name,trigger_type,trigger_sched,handler,status,concurrent_support,
+        recovery_support,score,exec_params,start_time,end_time,remark,
+        is_executing,exec_time_millis,last_sched_time,last_sched_server,
+        next_sched_time,create_by,create_tm,update_by,update_tm,version
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_sched_job (
+            name,trigger_type,trigger_sched,handler,status,concurrent_support,
+            recovery_support,score,exec_params,start_time,end_time,next_sched_time,
+            remark,create_by,create_tm,update_by,update_tm,version
+        ) VALUES (
+            #{name},#{triggerType},#{triggerSched},#{handler},#{status},#{concurrentSupport},
+            #{recoverySupport},#{score},#{execParams},#{startTime},#{endTime},#{nextSchedTime},
+            #{remark},#{createBy},#{createTm},#{updateBy},#{updateTm},1
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE t_sched_job 
+        SET name=#{name}, trigger_type=#{triggerType}, trigger_sched=#{triggerSched}, 
+            handler=#{handler}, status=#{status}, score=#{score}, 
+            concurrent_support=#{concurrentSupport}, recovery_support=#{recoverySupport}, 
+            exec_params=#{execParams}, start_time=#{startTime}, end_time=#{endTime}, 
+            last_sched_time=#{lastSchedTime}, next_sched_time=#{nextSchedTime}, remark=#{remark}, 
+            update_by=#{updateBy}, update_tm=#{updateTm}, version=version+1 
+        WHERE id=#{id} AND version=#{version}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE t_sched_job 
+        SET status=#{status}, version=version+1 
+        WHERE id=#{id} AND version=#{version} 
+    </update>
+
+    <update id="correctExec">
+        UPDATE t_sched_job 
+        SET is_executing=0, exec_time_millis=null, 
+            next_sched_time=#{nextSchedTime}, version=version+1 
+        WHERE id=#{id} AND version=#{version} 
+    </update>
+
+    <delete id="delete">
+        DELETE FROM t_sched_job WHERE id=#{jobId} AND version=#{version} 
+    </delete>
+
+    <select id="get" resultType="code.ponfee.job.model.SchedJob">
+        SELECT <include refid="base_columns"/> FROM t_sched_job WHERE id=#{jobId} 
+    </select>
+
+    <select id="query4list" resultType="code.ponfee.job.model.SchedJob" parameterType="map">
+        SELECT <include refid="base_columns" /> FROM t_sched_job 
+        <where>
+            <if test="jobId!=null">id=#{jobId}</if>
+            <if test="jobName!=null">AND name LIKE '%${jobName}%'</if>
+            <if test="status!=null">AND status=#{status}</if>
+        </where>
+        ORDER BY update_tm DESC
+    </select>
+
+    <!-- 获取job id list -->
+    <select id="listJobIds" resultType="Long" parameterType="int">
+        SELECT id FROM t_sched_job 
+        <where>
+            <if test="_parameter!=null">status=#{_parameter}</if>
+        </where>
+    </select>
+
+    <!-- 尝试获取锁 -->
+    <update id="tryAcquire">
+        UPDATE t_sched_job 
+        SET is_executing=#{isExecuting}, last_sched_time=#{lastSchedTime}, 
+            last_sched_server=#{lastSchedServer}, next_sched_time=#{nextSchedTime}, 
+            exec_time_millis=#{execTimeMillis}, version=version+1 
+        WHERE id=#{id} AND status=1 AND version=#{version} 
+        <!-- 修改：由程序来处理死锁问题（此处只能通过版本号CAS机制去竞争锁，不能用is_executing=0条件）
+             AND ( concurrent_support=0 OR is_executing=0 
+                   OR TIMESTAMPDIFF(HOUR,exec_time_millis,#{execTimeMillis})>3
+                 ) 
+        -->
+    </update>
+
+    <!-- 完成调试执行 -->
+    <update id="doneExecution">
+        UPDATE t_sched_job SET is_executing=0, exec_time_millis=null, version=version+1 
+        WHERE id=#{id} AND is_executing=1 AND exec_time_millis=#{execTimeMillis} 
+    </update>
+
+    <!-- 收集各服务器调度负载数据 -->
+    <select id="collectServersLoadBalance" resultType="map">
+        SELECT last_sched_server server, SUM(score) scores FROM t_sched_job 
+        WHERE is_executing=1 AND status=1 GROUP BY last_sched_server 
+    </select>
+
+</mapper>

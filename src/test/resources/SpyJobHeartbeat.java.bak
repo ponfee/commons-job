@@ -1,0 +1,204 @@
+//package code.ponfee.job.spy;
+//
+//import java.util.Date;
+//import java.util.concurrent.ThreadPoolExecutor;
+//import java.util.concurrent.atomic.AtomicBoolean;
+//import java.util.concurrent.locks.Lock;
+//import java.util.concurrent.locks.ReentrantLock;
+//
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+//
+//import code.ponfee.commons.json.Jsons;
+//import code.ponfee.job.common.CommonUtils;
+//import code.ponfee.job.common.Constants;
+//import code.ponfee.job.dao.ISchedJobDao;
+//import code.ponfee.job.dao.cache.SchedJobCached;
+//import code.ponfee.job.model.SchedJob;
+//
+///**
+// * Simply job heartbeat
+// * 
+// * @author Ponfee
+// */
+//public class SpyJobHeartbeat {
+//
+//    private static Logger logger = LoggerFactory.getLogger(SpyJobHeartbeat.class);
+//
+//    private final ISchedJobDao schedJobDao;
+//    private final SchedJobCached schedJobCached;
+//    private final ThreadPoolExecutor executor;
+//
+//    private AtomicBoolean started = new AtomicBoolean(false);
+//    private HeartbeatRunner heartbeat;
+//
+//    public SpyJobHeartbeat(ISchedJobDao schedJobDao, 
+//                           SchedJobCached schedJobCached, 
+//                           ThreadPoolTaskExecutor executor) {
+//        this.schedJobDao = schedJobDao;
+//        this.schedJobCached = schedJobCached;
+//        this.executor = executor.getThreadPoolExecutor();
+//    }
+//
+//    /**
+//     * Startup schedule
+//     */
+//    public synchronized void startup() {
+//        if (started.get()) {
+//            throw new RuntimeException("The JobHeartbeat are already started!");
+//        }
+//        heartbeat = new HeartbeatRunner(schedJobDao, schedJobCached, executor);
+//        started.set(true);
+//    }
+//
+//    /**
+//     * shutdown schedule
+//     */
+//    public synchronized void shutdown() {
+//        if (heartbeat != null) {
+//            heartbeat.running = false;
+//        }
+//    }
+//
+//    public boolean isStarted() {
+//        return started.get();
+//    }
+//
+//    public boolean isShutdown() {
+//        return !isStarted();
+//    }
+//
+//    /**
+//     * Heartbeat, alone run in thread
+//     */
+//    private static final class HeartbeatRunner extends Thread {
+//        private static final int HEARTBEAT_PERIOD_MILLIS = 2000;
+//        private static final Lock LOCK = new ReentrantLock();
+//
+//        private final ISchedJobDao schedJobDao;
+//        private final SpyJobExecutor schedJobExecutor;
+//        private final ThreadPoolExecutor threadPoolExecutor;
+//
+//        private volatile boolean running = true;
+//
+//        HeartbeatRunner(ISchedJobDao schedJobDao, SchedJobCached schedJobCached, 
+//                        ThreadPoolExecutor threadPoolExecutor) {
+//            this.schedJobDao = schedJobDao;
+//            this.schedJobExecutor = new SpyNormalJobExecutor(schedJobDao, schedJobCached);
+//            this.threadPoolExecutor = threadPoolExecutor;
+//
+//            super.setName("spy-job-heartbeat-thread-" + Integer.toHexString(hashCode()));
+//            super.setDaemon(true);
+//            super.start();
+//        }
+//
+//        @Override
+//        public void run() {
+//            while (running) {
+//                try {
+//                    Thread.sleep(HEARTBEAT_PERIOD_MILLIS);
+//                } catch (Throwable e) {
+//                    logger.error("Thread sleep occur error.", e);
+//                }
+//
+//                if (!LOCK.tryLock()) {
+//                    continue;
+//                }
+//
+//                try {
+//                    // 负载均衡控制(least active load balance)
+//                    // 查看排名：有序集成员按score值递增(从小到大)顺序排列，排名以0为底，score值最小的成员排名为0
+//                    if (schedJobDao.incrAndRank(Constants.SERVER_INSTANCE, 0) > 0) {
+//                        continue;
+//                    }
+//
+//                    for (long jobId : schedJobDao.listJobIds()) {
+//                        // 占位符
+//                        if (Constants.NONE_JOB_PLACEHOLDER.equals(jobId)) {
+//                            continue;
+//                        }
+//
+//                        // 获取调度实体
+//                        SchedJob job = schedJobDao.get(jobId);
+//                        if (job == null) {
+//                            logger.error("schedule job not found[{}].", jobId);
+//                            continue;
+//                        } else if (job.getStatus() == SchedJob.STATUS_STOP) {
+//                            logger.error("schedule job was stop[{}].", jobId);
+//                            continue;
+//                        }
+//
+//                        // 获取下次执行时间
+//                        Date now = new Date();
+//                        if (job.getNextSchedTime() == null) {
+//                            Date nextFireTime = CommonUtils.computeNextFireTime(job);
+//                            if (nextFireTime == null) {
+//                                logger.error("This spy job cannot be fire: {}.", Jsons.toJson(job));
+//                                job.setStatus(SchedJob.STATUS_STOP);
+//                                schedJobDao.toggle(job); // stop the job
+//                                continue; // 不符合可执行的时间范围则跳过
+//                            }
+//                            job.setNextSchedTime(nextFireTime);
+//                        } else if (job.getNextSchedTime().after(now)) {
+//                            continue; // 还未到执行时间点则跳过
+//                        }
+//
+//                        // 判断是否需要做串行执行
+//                        if (   !job.getConcurrentSupport()
+//                            && job.getIsExecuting()
+//                            && (now.getTime() - job.getExecTimeMillis()) < clockdiff(job)
+//                        ) {
+//                            continue; // 如果 [不支持并发] && [正在执行] && [还未到达防止死锁的超时时间] 则跳过
+//                        }
+//
+//                        // 尝试获取执行锁
+//                        if (tryAcquire(job, now)) {
+//                            schedJobDao.incrAndRank(Constants.SERVER_INSTANCE, job.getScore());
+//                            threadPoolExecutor.execute(() -> schedJobExecutor.execute(job)); // asnyc exec job
+//                            //break; // break for loop: 获取到新任务后就不再执行其它任务
+//                        }
+//                    }
+//                } catch (Throwable e) {
+//                    logger.error("Job heartbeat occur error.", e);
+//                } finally {
+//                    LOCK.unlock();
+//                } // end of try catch finally
+//
+//            } // end of while
+//        }
+//
+//        /**
+//         * 尝试获取执行锁
+//         * @param  job
+//         * @return boolean
+//         */
+//        private boolean tryAcquire(SchedJob job, Date date) {
+//            Date schedTime = job.getNextSchedTime();
+//            if (schedTime.after(date)) {
+//                // 先更新，但不执行
+//                job.setIsExecuting(false);
+//                job.setExecTimeMillis(null);
+//            } else {
+//                job.setIsExecuting(true); // 执行
+//                job.setExecTimeMillis(date.getTime());
+//                job.setLastSchedTime(schedTime); // 本次执行后变为上一次执行时间
+//                job.setLastSchedServer(Constants.SERVER_INSTANCE); // 执行服务器
+//                job.setNextSchedTime(CommonUtils.computeNextFireTime(job)); // 更新下一次执行时间点
+//            }
+//            // 先获取锁再判断时间
+//            return schedJobDao.tryAcquire(job) && !schedTime.after(date);
+//        }
+//    }
+//
+//    /**
+//     * Calculate the sched time diff
+//     * 
+//     * @param job the SchedJob
+//     * @return a long time millis of the sched time diff
+//     */
+//    private static long clockdiff(SchedJob job) {
+//        return job.getNextSchedTime().getTime() - job.getLastSchedTime().getTime();
+//    }
+//
+//}
