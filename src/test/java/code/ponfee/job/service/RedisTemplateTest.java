@@ -13,9 +13,11 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.io.Files;
 
 import code.ponfee.commons.io.WrappedBufferedReader;
+import code.ponfee.commons.jedis.spring.RedisBloomFilter;
 import code.ponfee.commons.jedis.spring.SpringRedisLock;
 import code.ponfee.commons.util.MavenProjects;
 import code.ponfee.commons.util.ObjectUtils;
@@ -147,4 +149,30 @@ public class RedisTemplateTest extends BaseTest<RedisTemplate<String, byte[]>> {
         }
     }
 
+    @Test
+    public void test10() {
+        System.out.println(getBean().getExpire("123456"));
+        System.out.println(getBean().getExpire("CRAWLER_BLOOMFILTER"));
+    }
+
+    @Test
+    public void test11() {
+        RedisBloomFilter bloomFilter = new RedisBloomFilter(getBean(), 0.0001, 600000);
+        System.out.println(bloomFilter.getSizeOfBloomFilter());
+        System.out.println(bloomFilter.getNumberOfHashFunctions());
+
+        byte[] element = "123".getBytes();
+
+        Stopwatch watch = Stopwatch.createStarted();
+        System.out.println(bloomFilter.contains(element));
+        //System.out.println(watch.stop().toString());
+
+        watch.reset().start();
+        bloomFilter.add(element);
+        //System.out.println(watch.stop().toString());
+
+        watch.reset().start();
+        System.out.println(bloomFilter.contains(element));
+        //System.out.println(watch.stop().toString());
+    }
 }
