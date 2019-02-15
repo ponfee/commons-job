@@ -1,5 +1,6 @@
 package code.ponfee.job.handler;
 
+import code.ponfee.commons.model.Result;
 import code.ponfee.job.model.SchedJob;
 
 /**
@@ -14,9 +15,9 @@ public interface JobHandler {
      * Handles sched job
      * 
      * @param job the SchedJob
-     * @return result of whether success, {@code true} means success
+     * @return result
      */
-    boolean handle(SchedJob job);
+    Result<Void> handle(SchedJob job);
 
     /**
      * Verifies SchedJob

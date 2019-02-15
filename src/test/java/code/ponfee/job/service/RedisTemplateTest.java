@@ -157,22 +157,23 @@ public class RedisTemplateTest extends BaseTest<RedisTemplate<String, byte[]>> {
 
     @Test
     public void test11() {
-        RedisBloomFilter bloomFilter = new RedisBloomFilter(getBean(), 0.0001, 600000);
+        String key = "key";
+        RedisBloomFilter bloomFilter = new RedisBloomFilter(key, getBean(), 0.0001, 600000);
         System.out.println(bloomFilter.getSizeOfBloomFilter());
         System.out.println(bloomFilter.getNumberOfHashFunctions());
 
         byte[] element = "123".getBytes();
 
         Stopwatch watch = Stopwatch.createStarted();
-        System.out.println(bloomFilter.contains(element));
+        System.out.println(bloomFilter.mightContain(element));
         //System.out.println(watch.stop().toString());
 
         watch.reset().start();
-        bloomFilter.add(element);
+        bloomFilter.put(element);
         //System.out.println(watch.stop().toString());
 
         watch.reset().start();
-        System.out.println(bloomFilter.contains(element));
+        System.out.println(bloomFilter.mightContain(element));
         //System.out.println(watch.stop().toString());
     }
 }

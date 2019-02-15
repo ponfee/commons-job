@@ -47,7 +47,7 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
     private static Logger logger = LoggerFactory.getLogger(QuartzJobManager.class);
 
     private final Scheduler scheduler;
-    private final String groupName;
+    private final String    groupName;
 
     public QuartzJobManager(Scheduler scheduler) throws SchedulerException {
         // scheduler.getSchedulerInstanceId()
@@ -133,8 +133,9 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
             // job detail
             JobKey jobKey = JobKey.jobKey(job.jobName(), groupName);
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-            SchedJob prevJob; boolean isNewJobDetail = (jobDetail == null);
-            if (isNewJobDetail) {
+            boolean isNewJob = (jobDetail == null);
+            SchedJob prevJob; 
+            if (isNewJob) {
                 Class<? extends Job> clazz = job.getConcurrentSupport() 
                                              ? QuartzNormalJobExecutor.class 
                                              : QuartzDefaultJobExecutor.class;
@@ -167,7 +168,7 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
                 //scheduler.resumeTrigger(triggerKey);
             }
 
-            if (isNewJobDetail) {
+            if (isNewJob) {
                 scheduler.scheduleJob(jobDetail, trigger);
             } else {
                 // a stateful job is just the opposite - its JobDataMap 
@@ -387,6 +388,8 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
 
     /**
      * Starts the scheduler
+     * 
+     * 启动Scheduler
      */
     public void startup() {
         try {
@@ -400,10 +403,12 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
 
     /**
      * Standby the scheduler
+     * 
+     * standby模式时Scheduler暂时停止查找Job去执行
      */
     public void standby() {
         try {
-            if (scheduler.isInStandbyMode()) {
+            if (!scheduler.isInStandbyMode()) {
                 scheduler.standby();
             }
         } catch (SchedulerException e) {
@@ -413,6 +418,8 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
 
     /**
      * Shutdown the scheduler
+     * 
+     * 关闭Scheduler
      */
     public void shutdown() {
         try {

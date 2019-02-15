@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Throwables;
 
 import code.ponfee.commons.compile.exception.CompileExprException;
+import code.ponfee.commons.model.Result;
 import code.ponfee.commons.reflect.CglibUtils;
 import code.ponfee.job.common.Constants;
 import code.ponfee.job.dao.ISchedJobDao;
@@ -38,7 +39,7 @@ public class SpyNormalJobExecutor implements SpyJobExecutor {
 
     @Override
     public void execute(SchedJob job) {
-        Date start = new Date(); Exception ex = null; boolean result = false;
+        Date start = new Date(); Exception ex = null; Result<Void> result = null;
         try {
             if (logger.isInfoEnabled()) {
                 logger.info("schedule job execute begin [{}-{}]", job.getId(), job.getName());
@@ -82,14 +83,17 @@ public class SpyNormalJobExecutor implements SpyJobExecutor {
             }
 
             // 日志记录
-            String exception = (ex == null) ? null : Throwables.getStackTraceAsString(ex);
-            if (exception != null && exception.length() > Constants.MAX_ERROR_LENGTH) {
-                exception = exception.substring(0, Constants.MAX_ERROR_LENGTH);
+            String message = (ex != null) 
+                             ? Throwables.getStackTraceAsString(ex)
+                             : (result != null && result.isFailure() ? result.getMsg() : null);
+            if (message != null && message.length() > Constants.MAX_ERROR_LENGTH) {
+                message = message.substring(0, Constants.MAX_ERROR_LENGTH);
             }
             try {
+                boolean status = result != null && result.isSuccess();
                 schedJobDao.recordLog(new SchedLog(
-                    Constants.SERVER_INSTANCE, result, isManual, job.getId(), job.getName(), 
-                    job.getExecParams(), job.getLastSchedTime(), start, new Date(), exception
+                    Constants.SERVER_INSTANCE, status, isManual, job.getId(), job.getName(), 
+                    job.getExecParams(), job.getLastSchedTime(), start, new Date(), message
                 ));
             } catch (Exception err) {
                 logger.error("job record log error [{}-{}]", job.getId(), job.getName(), err);

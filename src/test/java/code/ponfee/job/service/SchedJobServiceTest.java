@@ -10,7 +10,7 @@ import code.ponfee.commons.model.Result;
 import code.ponfee.commons.util.MavenProjects;
 import code.ponfee.job.BaseTest;
 import code.ponfee.job.enums.TriggerType;
-import code.ponfee.job.handler.JobHandlerTest;
+import code.ponfee.job.handler.TestJobHandler;
 import code.ponfee.job.model.SchedJob;
 import code.ponfee.job.service.ISchedJobService;
 
@@ -39,7 +39,7 @@ public class SchedJobServiceTest extends BaseTest<ISchedJobService> {
             job.setName("repairBug" + i);
             job.triggerType(TriggerType.CRON);
             job.setTriggerSched("0 */2 * * * ?");
-            job.setHandler(Files.toString(MavenProjects.getMainJavaFile(JobHandlerTest.class)));
+            job.setHandler(Files.toString(MavenProjects.getMainJavaFile(TestJobHandler.class)));
             job.setStatus(1);
             job.setCreateBy("tom");
             Result<?> result = getBean().addJob(job);

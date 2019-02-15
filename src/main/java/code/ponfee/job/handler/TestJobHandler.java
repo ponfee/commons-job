@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import code.ponfee.commons.model.Result;
 import code.ponfee.commons.util.Dates;
 import code.ponfee.commons.util.SpringContextHolder;
 import code.ponfee.job.model.SchedJob;
@@ -18,11 +19,11 @@ import code.ponfee.job.model.SchedJob;
  * 
  * @author Ponfee
  */
-@JobHandlerMeta("调度处理器（测试类）")
-public class JobHandlerTest implements JobHandler {
+@JobHandlerMeta("用于测试的调度器")
+public class TestJobHandler implements JobHandler {
 
     @Override
-    public boolean handle(SchedJob job) {
+    public Result<Void> handle(SchedJob job) {
         ThreadPoolTaskExecutor task = SpringContextHolder.getBean(ThreadPoolTaskExecutor.class);
         int size = task.getCorePoolSize();
         List<Future<Boolean>> calls = new ArrayList<>();
@@ -38,12 +39,7 @@ public class JobHandlerTest implements JobHandler {
             }
         }
         System.out.println("=======job end " + Dates.format(new Date()) + "  " + job.getName());
-        return true;
-    }
-
-    @Override
-    public boolean verify(SchedJob job) {
-        return true;
+        return Result.SUCCESS;
     }
 
     private static final class TestExecutor implements Callable<Boolean> {

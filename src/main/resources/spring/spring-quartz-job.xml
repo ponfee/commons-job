@@ -11,6 +11,11 @@
   <bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
     <property name="configLocation" value="classpath:quartz.properties" />
 
+    <property name="autoStartup" value="true" />
+    <property name="startupDelay" value="5" />
+    <!-- to or not overwrite already registered jobs in persisted job store -->
+    <property name="overwriteExistingJobs" value="true" />
+
     <!-- org.quartz.jobStore.class: org.springframework.scheduling.quartz.LocalDataSourceJobStore -->
     <property name="dataSource" ref="dataSource" />
     <property name="transactionManager" ref="transactionManager" />
@@ -20,7 +25,7 @@
 
     <!-- 每台集群机器部署应用的时候会更新触发器-->
     <property name="overwriteExistingJobs" value="true" />
-    <property name="applicationContextSchedulerContextKey" value="app-ctx-key" />
+    <property name="applicationContextSchedulerContextKey" value="quartz-cluster-job" />
 
     <!-- org.quartz.threadPool.class: org.springframework.scheduling.quartz.LocalTaskExecutorThreadPool -->
     <property name="taskExecutor" ref="taskExecutor" />

@@ -16,7 +16,6 @@ import code.ponfee.job.handler.JobHandlerMeta;
  * 
  * @author Ponfee
  */
-@SuppressWarnings("unchecked")
 public final class Constants {
 
     public static final String CACHE_KEY_PREFIX = "sched:"; // cache key prefix of sched job
@@ -27,8 +26,9 @@ public final class Constants {
 
     public static final String SERVER_INSTANCE = Networks.HOST_IP + ":" + ObjectUtils.uuid22();
 
-    public static final Map<String, String> JOB_HANDLERS;
+    public static final Map<String, String> BUILTIN_HANDLERS; // 内建处理器
     static {
+        @SuppressWarnings("unchecked")
         Set<Class<?>> classes = new ResourceScanner("code.ponfee.job")
                                      .scan4class(JobHandlerMeta.class);
         ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
@@ -38,7 +38,7 @@ public final class Constants {
                 clazz.getAnnotation(JobHandlerMeta.class).value()
             );
         }
-        JOB_HANDLERS = builder.build();
+        BUILTIN_HANDLERS = builder.build();
     }
 
 }
