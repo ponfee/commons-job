@@ -17,7 +17,7 @@ import tk.mybatis.mapper.annotation.KeySql;
 public class SchedLog implements Serializable {
     private static final long serialVersionUID = 2520801190208386818L;
 
-    @Id // @Id注解的字段必须为包装类型（不能为long,int）
+    @Id // @Id注解的字段必须为包装类型（不能为原始类型，如：long、int）
     @KeySql(useGeneratedKeys = true)
     private Long id; // 主键id
 
