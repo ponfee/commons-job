@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableMap;
 public class SchedJobControllerTest {
 
     public static final String URL = "http://localhost:8000/";
-    //public static final String URL = "http://ddt-market-res-int.sit.sf-express.com/";
     public static final Map<String, String> COOKIE = ImmutableMap.of(
             "Cookie",
             "_TOKEN_KEY_=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwMTM2NzgyNSIsImV4cCI6MTU0NTIxNjEwNH0.8pCYGNPy5CzgdGay0MYhVhlm4eAfQXYE_oHAu4QzRDM"
