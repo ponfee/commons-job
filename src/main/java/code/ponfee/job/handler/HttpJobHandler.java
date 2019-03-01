@@ -30,10 +30,13 @@ public class HttpJobHandler implements JobHandler {
         if (params.containsKey("params")) {
             http.addParam((Map<String, Object>) params.get("params"));
         }
+        if (params.containsKey("data")) {
+            http.data((String) params.get("data"));
+        }
 
         String resp = http.request();
         HttpStatus status = http.getStatus();
-        if (status == HttpStatus.OK || status == HttpStatus.CREATED) {
+        if (HttpStatus.Series.valueOf(status) == HttpStatus.Series.SUCCESSFUL) {
             logger.info("Http success: {}, response: {}.", status, resp);
             return Result.SUCCESS;
         } else {

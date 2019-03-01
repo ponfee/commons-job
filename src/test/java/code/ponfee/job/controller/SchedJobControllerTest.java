@@ -35,17 +35,18 @@ public class SchedJobControllerTest {
     @Test(timeout = 999999999)
     public void add() {
         Http http = Http.post(URL + "sched/job/add")
-                .addParam("triggerType", 5)
-                .addParam("triggerSched", "{\"origin\":\"2000-01-01 00:00:00\", \"step\":1}")
+                .addParam("triggerType", 1)
+                //.addParam("triggerSched", "{\"origin\":\"2000-01-01 00:00:00\", \"step\":1}")
+                .addParam("triggerSched", "0/30 * * * * ?")
                 .addParam("startTime", "2018-02-28 23:59:58")
                 .addParam("name", "测试1")
                 .addParam("concurrentSupport", "false")
                 .addParam("recoverySupport", "true")
-                .addParam("bizKey", "1")
-                //.addParam("handler", "code.ponfee.job.handler.JobHandlerTest")
-                .addParam("handler", "code.ponfee.job.handler.DefaultJobHandler")
+                //.addParam("handler", "code.ponfee.job.handler.TestJobHandler")
+                .addParam("handler", "code.ponfee.job.handler.HttpJobHandler")
+                .addParam("execParams", "{\"url\":\"http://www.baidu.com\"}")
                 .addParam("status", 1)
-                .addParam("endTime", "2018-04-30 00:00:00")
+                //.addParam("endTime", "2018-04-30 00:00:00")
                 .addHeader(COOKIE);
         try {
 
@@ -73,7 +74,6 @@ public class SchedJobControllerTest {
                 //.addParam("handler", "code.ponfee.job.handler.DefaultJobHandler")
                 .addParam("recoverySupport", "false")
                 .addParam("status", 1)
-                .addParam("bizKey", 1)
                 .addParam("version", 1)
                 .addHeader(COOKIE);
         print(http.request());

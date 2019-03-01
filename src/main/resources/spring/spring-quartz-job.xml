@@ -13,8 +13,6 @@
 
     <property name="autoStartup" value="true" />
     <property name="startupDelay" value="5" />
-    <!-- to or not overwrite already registered jobs in persisted job store -->
-    <property name="overwriteExistingJobs" value="true" />
 
     <!-- org.quartz.jobStore.class: org.springframework.scheduling.quartz.LocalDataSourceJobStore -->
     <property name="dataSource" ref="dataSource" />
@@ -23,9 +21,11 @@
     <!-- priority: schedulerName > beanName > org.quartz.scheduler.instanceName  -->
     <property name="schedulerName" value="CLUSTERED-SCHED" />
 
-    <!-- 每台集群机器部署应用的时候会更新触发器-->
+    <!-- 每台集群机器部署应用的时候会更新触发器：to or not overwrite already registered jobs in persisted job store -->
     <property name="overwriteExistingJobs" value="true" />
-    <property name="applicationContextSchedulerContextKey" value="quartz-cluster-job" />
+
+    <!-- ApplicationContext springCtx = (ApplicationContext) JobExecutionContext.getScheduler().getContext().get("applicationContext") -->
+    <property name="applicationContextSchedulerContextKey" value="applicationContext" />
 
     <!-- org.quartz.threadPool.class: org.springframework.scheduling.quartz.LocalTaskExecutorThreadPool -->
     <property name="taskExecutor" ref="taskExecutor" />

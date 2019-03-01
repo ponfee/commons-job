@@ -30,8 +30,8 @@ org.quartz.jobStore.isClustered=true
 # Configure Datasources
 #============================================================================
 org.quartz.dataSource.myDS.driver: com.mysql.jdbc.Driver
-org.quartz.dataSource.myDS.URL: jdbc:mysql://10.202.105.88:3306/quartz_test?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+org.quartz.dataSource.myDS.URL: jdbc:log4jdbc:mysql://112.74.170.75:3306/spy_schedule_job?useUnicode=true&characterEncoding=UTF-8
 org.quartz.dataSource.myDS.user: root
-org.quartz.dataSource.myDS.password: 123456
+org.quartz.dataSource.myDS.password: 
 org.quartz.dataSource.myDS.maxConnections: 5
 org.quartz.dataSource.myDS.validationQuery: select 0
