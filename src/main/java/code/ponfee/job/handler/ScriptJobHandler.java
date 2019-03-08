@@ -11,11 +11,11 @@ import code.ponfee.job.model.SchedJob;
  * @author Ponfee
  */
 @JobHandlerMeta("执行脚本的调度器")
-public class ScriptJobHandler implements JobHandler {
+public class ScriptJobHandler implements JobHandler<String> {
 
     @Override
-    public Result<Void> handle(SchedJob job) {
-        return Result.SUCCESS;
+    public Result<String> handle(SchedJob job) {
+        return Result.success("OK");
     }
 
 }

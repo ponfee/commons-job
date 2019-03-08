@@ -9,7 +9,7 @@ import code.ponfee.job.model.SchedJob;
  * @author Ponfee
  */
 @FunctionalInterface
-public interface JobHandler {
+public interface JobHandler<T> {
 
     /**
      * Handles sched job
@@ -17,7 +17,7 @@ public interface JobHandler {
      * @param job the SchedJob
      * @return result
      */
-    Result<Void> handle(SchedJob job);
+    Result<T> handle(SchedJob job);
 
     /**
      * Verifies SchedJob

@@ -39,7 +39,7 @@ public class SpyNormalJobExecutor implements SpyJobExecutor {
 
     @Override
     public void execute(SchedJob job) {
-        Date start = new Date(); Exception ex = null; Result<Void> result = null;
+        Date start = new Date(); Exception ex = null; Result<?> result = null;
         try {
             if (logger.isInfoEnabled()) {
                 logger.info("schedule job execute begin [{}-{}]", job.getId(), job.getName());

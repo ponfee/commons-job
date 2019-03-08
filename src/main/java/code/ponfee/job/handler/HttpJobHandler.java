@@ -21,12 +21,12 @@ import code.ponfee.job.model.SchedJob;
  * @author Ponfee
  */
 @JobHandlerMeta("执行http请求的调度器")
-public class HttpJobHandler implements JobHandler {
+public class HttpJobHandler implements JobHandler<String> {
 
     private static Logger logger = LoggerFactory.getLogger(HttpJobHandler.class);
 
     @Override @SuppressWarnings("unchecked")
-    public Result<Void> handle(SchedJob job) {
+    public Result<String> handle(SchedJob job) {
         Map<String, Object> params = Jsons.fromJson(job.getExecParams(), Map.class);
         Http http = Http.of(String.valueOf(params.get("url")), String.valueOf(params.get("method")));
         if (params.containsKey("params")) {
@@ -40,7 +40,7 @@ public class HttpJobHandler implements JobHandler {
         HttpStatus status = http.getStatus();
         if (HttpStatus.Series.valueOf(status) == HttpStatus.Series.SUCCESSFUL) {
             logger.info("Http success: {}, response: {}.", status, resp);
-            return Result.SUCCESS;
+            return Result.success(resp);
         } else {
             return Result.failure(ResultCode.SERVER_ERROR, "Http fail: " + status + ", response: " + resp);
         }

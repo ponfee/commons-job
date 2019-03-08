@@ -17,9 +17,9 @@ import code.ponfee.commons.jce.digest.DigestUtils;
  */
 public final class JobHandlerLoader {
 
-    private static final JobHandler NOOP_HANDLER = new NoopJobHandler();
+    private static final JobHandler<Void> NOOP_HANDLER = new NoopJobHandler();
     private static final JdkCompiler COMPILER = new JdkCompiler();
-    private static final ConcurrentMap<String, Class<? extends JobHandler>> REGISTERED = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Class<? extends JobHandler<?>>> REGISTERED = new ConcurrentHashMap<>();
 
     /**
      * 加载类：类全限定名或源代码
@@ -30,20 +30,20 @@ public final class JobHandlerLoader {
      * @throws CompileExprException
      */
     @SuppressWarnings("unchecked")
-    public static JobHandler loadHandler(String handlerText) throws Exception {
+    public static JobHandler<?> loadHandler(String handlerText) throws Exception {
         if (StringUtils.isBlank(handlerText)) {
             return NOOP_HANDLER;
         }
 
-        Class<? extends JobHandler> handlerClass;
+        Class<? extends JobHandler<?>> handlerClass;
         if (RegexJavaSource.QUALIFIER_PATTERN.matcher(handlerText).matches()) {
             // class full qualifier name
-            handlerClass = (Class<? extends JobHandler>) Class.forName(handlerText);
+            handlerClass = (Class<? extends JobHandler<?>>) Class.forName(handlerText);
         } else {
             String key = DigestUtils.md5Hex(handlerText);
             if ((handlerClass = REGISTERED.get(key)) == null) {
                 // source code, compileForce
-                REGISTERED.put(key, handlerClass = (Class<? extends JobHandler>) COMPILER.compile(handlerText));
+                REGISTERED.put(key, handlerClass = (Class<? extends JobHandler<?>>) COMPILER.compile(handlerText));
             }
         }
 

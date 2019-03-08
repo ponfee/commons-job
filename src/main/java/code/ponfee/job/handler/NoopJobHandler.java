@@ -13,7 +13,7 @@ import code.ponfee.job.model.SchedJob;
  * @author Ponfee
  */
 @JobHandlerMeta("空操作的调度器")
-public class NoopJobHandler implements JobHandler {
+public class NoopJobHandler implements JobHandler<Void> {
 
     private static Logger logger = LoggerFactory.getLogger(NoopJobHandler.class);
 

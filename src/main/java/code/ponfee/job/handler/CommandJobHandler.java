@@ -20,12 +20,12 @@ import code.ponfee.job.model.SchedJob;
  * @author Ponfee
  */
 @JobHandlerMeta("执行命令的调度器")
-public class CommandJobHandler implements JobHandler {
+public class CommandJobHandler implements JobHandler<String> {
 
     private static Logger logger = LoggerFactory.getLogger(CommandJobHandler.class);
 
     @Override
-    public Result<Void> handle(SchedJob job) {
+    public Result<String> handle(SchedJob job) {
         InputStream input = null;
         try {
             Process process = Runtime.getRuntime().exec(job.getExecParams());
@@ -36,7 +36,7 @@ public class CommandJobHandler implements JobHandler {
             int code = process.exitValue();
             if (code == 0) {
                 logger.info("Commond verbose: {}.", verbose);
-                return Result.SUCCESS;
+                return Result.success(verbose);
             } else {
                 return Result.failure(ResultCode.SERVER_ERROR, "Command fail: " + code + ", verbose: " + verbose);
             }

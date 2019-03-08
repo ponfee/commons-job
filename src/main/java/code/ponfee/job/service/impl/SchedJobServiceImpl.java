@@ -265,7 +265,7 @@ public class SchedJobServiceImpl implements ISchedJobService {
         }
 
         try {
-            JobHandler handler = JobHandlerLoader.loadHandler(job.getHandler());
+            JobHandler<?> handler = JobHandlerLoader.loadHandler(job.getHandler());
             if (!handler.verify(job)) {
                 return Result.failure(
                     BAD_REQUEST, "Invalid sched job params: " + job.getExecParams()

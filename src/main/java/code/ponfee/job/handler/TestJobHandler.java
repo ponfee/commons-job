@@ -20,7 +20,7 @@ import code.ponfee.job.model.SchedJob;
  * @author Ponfee
  */
 @JobHandlerMeta("用于测试的调度器")
-public class TestJobHandler implements JobHandler {
+public class TestJobHandler implements JobHandler<Void> {
 
     @Override
     public Result<Void> handle(SchedJob job) {
