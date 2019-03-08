@@ -15,6 +15,8 @@ import code.ponfee.job.model.SchedJob;
 /**
  * Command job handler
  * 
+ * execParams: cmd.exe /c dir d:\
+ * 
  * @author Ponfee
  */
 @JobHandlerMeta("执行命令的调度器")

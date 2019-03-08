@@ -16,6 +16,8 @@ import code.ponfee.job.model.SchedJob;
 /**
  * Http job handler
  * 
+ * execParams: {"url":"http://www.baidu.com"}
+ * 
  * @author Ponfee
  */
 @JobHandlerMeta("执行http请求的调度器")
