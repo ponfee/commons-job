@@ -69,6 +69,7 @@ dependencies {
         exclude module: 'jcl-over-slf4j'
         exclude module: 'jul-to-slf4j'
     }
+    compile "code.ponfee:commons-compile:1.0-SNAPSHOT"
 
     compile "org.springframework:spring-tx:${springVersion}"
     compile "org.springframework:spring-jdbc:$springVersion"

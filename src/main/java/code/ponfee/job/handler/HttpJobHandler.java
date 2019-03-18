@@ -39,10 +39,11 @@ public class HttpJobHandler implements JobHandler<String> {
         String resp = http.request();
         HttpStatus status = http.getStatus();
         if (HttpStatus.Series.valueOf(status) == HttpStatus.Series.SUCCESSFUL) {
-            logger.info("Http success: {}, response: {}.", status, resp);
+            logger.info("Http success, status: {}, response: {}.", status, resp);
             return Result.success(resp);
         } else {
-            return Result.failure(ResultCode.SERVER_ERROR, "Http fail: " + status + ", response: " + resp);
+            logger.warn("Http fail, status: {}, response: {}.", status, resp);
+            return Result.failure(ResultCode.SERVER_ERROR, "Http fail, status: " + status + ", response: " + resp);
         }
     }
 

@@ -35,10 +35,11 @@ public class CommandJobHandler implements JobHandler<String> {
             process.waitFor();
             int code = process.exitValue();
             if (code == 0) {
-                logger.info("Commond verbose: {}.", verbose);
+                logger.info("Commond exec success, verbose: {}.", verbose);
                 return Result.success(verbose);
             } else {
-                return Result.failure(ResultCode.SERVER_ERROR, "Command fail: " + code + ", verbose: " + verbose);
+                logger.info("Commond exec fail, code: {}, verbose: {}.", code, verbose);
+                return Result.failure(ResultCode.SERVER_ERROR, "Command fail, code: " + code + ", verbose: " + verbose);
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
