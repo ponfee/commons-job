@@ -7,8 +7,8 @@
 
     <contextName>SPY-SCHEDULE-JOB-LOG</contextName>
 
-    <!-- 存放日志文件路径：${catalina.base:-.}/logs，${jetty.base:-.}/logs -->
-    <property name="Log_Home" value="${jetty.base:-.}/logs" />
+    <!-- 存放日志文件路径：${catalina.base:-.}/logs，${logback.home:-.}/logs -->
+    <property name="Log_Home" value="${logback.home:-.}/logs" />
 
     <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -118,10 +118,10 @@
     <logger name="jdbc.sqlonly" additivity="false" level="OFF">
         <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="jdbc.sqltiming" additivity="false" level="WARN">
+    <logger name="log4jdbc.debug" additivity="false" level="OFF">
         <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="log4jdbc.debug" additivity="false" level="WARN">
+    <logger name="jdbc.sqltiming" additivity="false" level="DEBUG">
         <appender-ref ref="STDOUT" />
     </logger>
 

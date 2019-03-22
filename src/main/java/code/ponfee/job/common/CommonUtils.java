@@ -38,7 +38,7 @@ public class CommonUtils {
 
         TriggerType trigger = TriggerType.of(job.getTriggerType());
 
-        // will be Dates.plusSeconds(start, 1) in QuartzUtils.getNextFireTime
+        // will be exec code with Dates.plusSeconds(start, 1) in QuartzUtils.getNextFireTime
         Date date = QuartzUtils.getNextFireTime(trigger, job.getTriggerSched(), start);
         if (   date == null
             || (job.getStartTime() != null && date.before(job.getStartTime()))

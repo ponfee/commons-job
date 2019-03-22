@@ -144,7 +144,7 @@ public class SpyJobScheduler {
                     }
 
                     if (job.getIsExecuting() && !heartbeat.isAlive(job.getLastSchedServer())) {
-                        // last exec job maybe server shutdown
+                        // last exec job server maybe shutdown
                         // record exec fail msg
                         schedJobDao.recordLog(new SchedLog(
                             job.getLastSchedServer(), false, false, job.getId(), job.getName(), job.getExecParams(), 
