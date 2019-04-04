@@ -205,7 +205,7 @@ public class SchedJobServiceImpl implements ISchedJobService {
         return toggleJob(job);
     }
 
-    //@Transactional(readOnly = true)
+    //@Transactional(readOnly = true) // FIXME @Transactional报错
     @Constraints(@Constraint(min = 1))
     public @Override Result<Void> triggerJob(long jobId) {
         SchedJob job = schedJobDao.get(jobId);
@@ -229,7 +229,9 @@ public class SchedJobServiceImpl implements ISchedJobService {
     }
 
     @Transactional(readOnly = true)
-    @Constraints(@Constraint(field = "beginTime", notNull = false, tense = Tense.PAST))
+    @Constraint(field = "pageNum", min = 1, msg = "pageNum不能小于1")
+    @Constraint(field = "pageSize", min = 1, msg = "pageSize不能小于1")
+    @Constraint(field = "beginTime", notNull = false, tense = Tense.PAST)
     public @Override Result<Page<SchedLog>> queryLogsForPage(Map<String, ?> params) {
         Date beginTime = (Date) params.get("beginTime");
         Date endTime = (Date) params.get("endTime");
