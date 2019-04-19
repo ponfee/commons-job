@@ -107,6 +107,7 @@ public class SchedJobServiceTest extends BaseTest<ISchedJobService> {
         PageRequestParams params = new PageRequestParams();
         //params.put("jobName", "test job");
         params.put("pageSize", 10);
+        params.put("pageNum", 1000000);
         Result<?> result = getBean().queryLogsForPage(params.getParams());
         printJson(result);
     }
