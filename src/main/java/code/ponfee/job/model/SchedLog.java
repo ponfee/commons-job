@@ -13,7 +13,7 @@ import tk.mybatis.mapper.annotation.KeySql;
  * 
  * @author Ponfee
  */
-@Table(name = "t_sched_log")
+@Table(name = "t_sched_log") // 集成Mybatis通用mapper
 public class SchedLog implements Serializable {
     private static final long serialVersionUID = 2520801190208386818L;
 

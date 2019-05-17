@@ -3,7 +3,10 @@ package code.ponfee.job.quartz;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.Job;
@@ -23,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.Assert;
 
 import code.ponfee.commons.json.Jsons;
 import code.ponfee.commons.math.Numbers;
@@ -54,8 +56,8 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
         this(scheduler, Scheduler.DEFAULT_GROUP);
     }
 
-    public QuartzJobManager(Scheduler scheduler, String groupName) {
-        Assert.notNull(scheduler, "Quartz scheduler cannot be null.");
+    public QuartzJobManager(@Nonnull Scheduler scheduler, String groupName) {
+        Objects.requireNonNull(scheduler, "Quartz scheduler cannot be null.");
         this.scheduler = scheduler;
         this.groupName = groupName;
     }
@@ -90,8 +92,9 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
         try {
             return scheduler.checkExists(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("Check quartz job key exists occur error: " 
-                           + jobKey.getName() + ", " + jobKey.getGroup() + ".", e);
+            throw new RuntimeException(
+                "Check exists job key occur error: " + jobKey.getName() + ", " + jobKey.getGroup() + ".", e
+            );
         }
     }
 
@@ -111,8 +114,9 @@ public class QuartzJobManager implements InitializingBean, DisposableBean {
      */
     public void assertJobExists(JobKey jobKey) {
         if (!checkJobExists(jobKey)) {
-            throw new RuntimeException("Quartz job not found: " + jobKey.getName() 
-                                     + ", " + jobKey.getGroup() + ".");
+            throw new RuntimeException(
+                "Quartz job not found: " + jobKey.getName() + ", " + jobKey.getGroup() + "."
+            );
         }
     }
 
