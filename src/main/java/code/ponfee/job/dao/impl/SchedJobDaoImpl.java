@@ -41,7 +41,7 @@ public class SchedJobDaoImpl implements ISchedJobDao {
     private @Resource SchedJobMapper jobMapper;
     private @Resource SchedLogMapper logMapper;
     private @Resource SchedJobCached cached;
-    private @Resource RedisTemplate<String, byte[]> bytRedis;
+    private @Resource RedisTemplate<byte[], byte[]> bytRedis;
 
     @Override
     public boolean add(SchedJob job) {
