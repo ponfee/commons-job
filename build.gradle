@@ -28,6 +28,12 @@ sourceCompatibility = 1.8
 def localMavenRepo=project.localMavenRepo[1..-2]
 def remoteMavenRepo=project.remoteMavenRepo[1..-2]
 
+
+// USER_HOME = System.getProperty("user.home")
+// 若本地没有相关jar包，gradle会下载到USER_HOME/.gradle目录下，
+// 如果想让gradle下载到指定目录下，需要配置GRADLE_USER_HOME环境变量
+// USER_HOME：Windows[C:/Users/username]；Linux[/home/username]
+// mavenLocal()：USER_HOME/.m2/settings.xml[localRepository] > M2_HOME/conf/settings.xml[localRepository] > USER_HOME/.m2/repository
 repositories {
     maven { url localMavenRepo }
     mavenLocal()
