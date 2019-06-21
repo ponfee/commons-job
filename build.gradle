@@ -64,6 +64,9 @@ dependencies {
     compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
 
     compile('code.ponfee:commons-core:1.16-SNAPSHOT') {
+        //exclude group: 'org.apache.logging.log4j', module: 'log4j-api' // by group and artifact
+        //exclude group: 'org.apache.logging.log4j' // by group
+        //exclude module: 'log4j-api' // by artifact name
         exclude module: 'log4j-api'
         exclude module: 'log4j-core'
         exclude module: 'log4j-slf4j-impl'
@@ -75,7 +78,6 @@ dependencies {
         exclude module: 'jcl-over-slf4j'
         exclude module: 'jul-to-slf4j'
 
-        //exclude group: 'dom4j', module: 'dom4j'
         exclude module: 'dom4j'
         exclude module: 'hessian'
         exclude module: 'fst'
