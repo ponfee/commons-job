@@ -64,9 +64,8 @@ public class SchedJobDaoImpl implements ISchedJobDao {
 
     @Override
     public boolean correctExec(SchedJob job) {
-        boolean flag = jobMapper.correctExec(job) == 1;
         cached.delSchedJob(job.getId());
-        return flag;
+        return jobMapper.correctExec(job) == 1;
     }
 
     @Override
@@ -93,12 +92,9 @@ public class SchedJobDaoImpl implements ISchedJobDao {
 
     @Override
     public boolean delete(long jobId, int version) {
-        boolean flag = jobMapper.delete(jobId, version) == 1;
-        if (flag) {
-            cached.remJobId(jobId);
-            cached.delSchedJob(jobId);
-        }
-        return flag;
+        cached.remJobId(jobId);
+        cached.delSchedJob(jobId);
+        return jobMapper.delete(jobId, version) == 1;
     }
 
     @Override
@@ -134,20 +130,14 @@ public class SchedJobDaoImpl implements ISchedJobDao {
 
     @Override
     public boolean tryAcquire(SchedJob job) {
-        boolean flag = jobMapper.tryAcquire(job) == 1;
-        if (flag) {
-            cached.delSchedJob(job.getId());
-        }
-        return flag;
+        cached.delSchedJob(job.getId());
+        return jobMapper.tryAcquire(job) == 1;
     }
 
     @Override
     public boolean doneExecution(SchedJob job) {
-        boolean flag = jobMapper.doneExecution(job) == 1;
-        if (flag) {
-            cached.delSchedJob(job.getId());
-        }
-        return flag;
+        cached.delSchedJob(job.getId());
+        return jobMapper.doneExecution(job) == 1;
     }
 
     /**

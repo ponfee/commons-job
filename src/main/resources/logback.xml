@@ -100,8 +100,8 @@
 
 
     <!-- ========================================logger======================================== -->
-    <!-- instead by log4jdbc: jdbc.sqltiming
-    <logger name="dao" additivity="false" level="WARN" >
+    <!-- instead by log4jdbc: jdbc.sqltiming -->
+    <!-- <logger name="dao" additivity="false" level="DEBUG" >
         <appender-ref ref="STDOUT"/>
     </logger> -->
     <!-- net.sf.log4jdbc.Slf4jSpyLogDelegator -->
