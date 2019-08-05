@@ -10,7 +10,7 @@ An easy and simply schedule job framework
 
 - `src/main/java/`
 
-Java源码，包含SpringBoot的启动类SpringBootStartup
+Java源码，包含SpringBoot的启动类SimplyJobStartup
 
 - `src/main/resources/`
 
