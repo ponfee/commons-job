@@ -9,7 +9,7 @@
 */
 
 buildscript {
-    //ext { springBootVersion = '1.5.19.RELEASE' }
+    //ext { springBootVersion = '1.5.21.RELEASE' }
     def springBootVersion = '1.5.21.RELEASE'
     repositories {
         maven { url localMavenRepo }
@@ -40,15 +40,14 @@ def localMavenRepo=project.localMavenRepo[1..-2]
 def remoteMavenRepo=project.remoteMavenRepo[1..-2]
 
 
-// USER_HOME = System.getProperty("user.home")
-// 若本地没有相关jar包，gradle会下载到USER_HOME/.gradle目录下，
-// 如果想让gradle下载到指定目录下，需要配置GRADLE_USER_HOME环境变量
-// USER_HOME：Windows[C:/Users/username]；Linux[/home/username]
+// 若本地没有相关jar包，gradle会下载到USER_HOME/.gradle目录下；如果想让gradle下载到指定目录下，需要配置GRADLE_USER_HOME环境变量；
+// USER_HOME=System.getProperty("user.home")。USER_HOME：Windows[C:/Users/username]；Linux[/home/username]
 // mavenLocal()：USER_HOME/.m2/settings.xml[localRepository] > M2_HOME/conf/settings.xml[localRepository] > USER_HOME/.m2/repository
 repositories {
     maven { url localMavenRepo }
     mavenLocal()
     maven { url remoteMavenRepo }
+    maven { url "https://plugins.gradle.org/m2/" }
     mavenCentral()
 }
 
@@ -131,7 +130,7 @@ dependencies {
 }
 
 compileJava.dependsOn(processResources {
-    // gradle build compile include xml resources: in /build dir
+    // 用gradle命令打包的时候把资源文件编译到“/build”目录
     //from('src/main/java') {
     //    include '**/*.xml'
     //}
@@ -139,7 +138,7 @@ compileJava.dependsOn(processResources {
 
 sourceSets {
     main {
-        // idea(eclipse) build project include xml resources: in /out dir
+        // 使用IDE开发工具（idea、eclipse）时，让资源文件编译到“/out”目录
         resources {
             srcDirs = ['src/main/java', 'src/main/resources']
         }
