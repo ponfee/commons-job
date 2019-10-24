@@ -28,7 +28,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import code.ponfee.commons.json.Jsons;
-import code.ponfee.commons.json.TypeReferences;
+import code.ponfee.commons.json.JacksonTypeReferences;
 import code.ponfee.commons.math.Numbers;
 import code.ponfee.commons.util.DatePeriods;
 import code.ponfee.commons.util.Dates;
@@ -168,7 +168,7 @@ public class QuartzUtils {
                 }
             default:
                 try {
-                    Map<String, String> params = Jsons.fromJson(schedule, TypeReferences.MAP_STRING);
+                    Map<String, String> params = Jsons.fromJson(schedule, JacksonTypeReferences.MAP_STRING);
                     if (!PARAMS.containsAll(params.keySet())) {
                         return false;
                     }
@@ -214,7 +214,7 @@ public class QuartzUtils {
             default:
                 Date origin; int step = 1;
                 try {
-                    Map<String, String> params = Jsons.fromJson(schedule, TypeReferences.MAP_STRING);
+                    Map<String, String> params = Jsons.fromJson(schedule, JacksonTypeReferences.MAP_STRING);
                     step = Numbers.toInt(params.get(PARAM_STEP), 1);
                     origin = Dates.toDate(params.get(PARAM_ORIGIN));
                 } catch (Exception e) {
@@ -269,7 +269,7 @@ public class QuartzUtils {
             default:
                 int step = 1;
                 try {
-                    Map<String, String> params = Jsons.fromJson(schedule, TypeReferences.MAP_STRING);
+                    Map<String, String> params = Jsons.fromJson(schedule, JacksonTypeReferences.MAP_STRING);
                     step = Numbers.toInt(params.get(PARAM_STEP), 1);
                 } catch (Exception ignored) {
                 }
