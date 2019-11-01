@@ -32,7 +32,7 @@ public class QuartzJobInitializer implements ApplicationListener<ContextRefreshe
             QuartzJobManager jobManager = SpringContextHolder.getBean(QuartzJobManager.class);
             ISchedJobDao schedJobDao = SpringContextHolder.getBean(ISchedJobDao.class);
             // TODO: scroll page query all records
-            schedJobDao.queryJobsForPage(params).process(job -> {
+            schedJobDao.queryJobsForPage(params).forEach(job -> {
                 try {
                     jobManager.addOrUpdateJob(job);
                 } catch (Exception e) {
