@@ -73,7 +73,7 @@ dependencies {
     compile 'org.springframework.data:spring-data-redis:1.8.22.RELEASE'
     compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
 
-    compile('code.ponfee:commons-core:2.0-SNAPSHOT') {
+    compile('code.ponfee:commons-core:2.2-SNAPSHOT') {
         //exclude group: 'org.apache.logging.log4j', module: 'log4j-api' // by group and artifact
         //exclude group: 'org.apache.logging.log4j' // by group
         //exclude module: 'log4j-api' // by artifact name
