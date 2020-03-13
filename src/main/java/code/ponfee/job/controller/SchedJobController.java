@@ -73,12 +73,12 @@ public class SchedJobController {
 
     @GetMapping("job/page")
     public Result<Page<SchedJob>> queryJobsForPage(PageRequestParams params) {
-        return schedJobService.queryJobsForPage(params.getParams());
+        return schedJobService.queryJobsForPage(params.origin());
     }
 
     @GetMapping("log/page")
     public Result<Page<SchedLog>> queryLogsForPage(PageRequestParams params) {
-        return schedJobService.queryLogsForPage(params.getParams());
+        return schedJobService.queryLogsForPage(params.origin());
     }
 
     // -------------------------------------------------------quartz sched job

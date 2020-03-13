@@ -92,7 +92,7 @@ public class SchedJobServiceTest extends BaseTest<ISchedJobService> {
     @Test
     public void testQuery4Page() {
         PageRequestParams params = new PageRequestParams();
-        Result<?> result = getBean().queryJobsForPage(params.getParams());
+        Result<?> result = getBean().queryJobsForPage(params.origin());
         printJson(result);
     }
 
@@ -108,7 +108,7 @@ public class SchedJobServiceTest extends BaseTest<ISchedJobService> {
         //params.put("jobName", "test job");
         params.put("pageSize", 10);
         params.put("pageNum", 1000000);
-        Result<?> result = getBean().queryLogsForPage(params.getParams());
+        Result<?> result = getBean().queryLogsForPage(params.origin());
         printJson(result);
     }
 
