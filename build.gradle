@@ -1,6 +1,5 @@
 // gradlew clean build -x test
-// gradlew dependencies -q --configuration compile > D:/tree.txt
-// gradlew commons-job:dependencies
+// gradlew dependencies -q --configuration compile > D:/tree.txt #gradlew commons-job:dependencies
 
 /*
 ./gradlew -x test sonarqube \
@@ -75,21 +74,11 @@ dependencies {
     compile 'org.springframework.data:spring-data-redis:1.8.23.RELEASE'
     compile 'com.googlecode.log4jdbc:log4jdbc:1.2'
 
+    //exclude group: 'org.apache.logging.log4j', module: 'log4j-api' // by group and artifact
+    //exclude group: 'org.apache.logging.log4j' // by group
+    //exclude module: 'log4j-api' // by artifact name
     compile('code.ponfee:commons-core:2.2-SNAPSHOT') {
-        //exclude group: 'org.apache.logging.log4j', module: 'log4j-api' // by group and artifact
-        //exclude group: 'org.apache.logging.log4j' // by group
-        //exclude module: 'log4j-api' // by artifact name
-        exclude module: 'log4j-api'
-        exclude module: 'log4j-core'
-        exclude module: 'log4j-slf4j-impl'
-        exclude module: 'log4j-jcl'
-        exclude module: 'log4j-jul'
-        exclude module: 'log4j-web'
-        exclude module: 'slf4j-api'
-        exclude module: 'log4j-over-slf4j'
-        exclude module: 'jcl-over-slf4j'
-        exclude module: 'jul-to-slf4j'
-
+        exclude group: 'org.apache.logging.log4j'
         exclude module: 'dom4j'
         exclude module: 'hessian'
         exclude module: 'fst'
@@ -101,6 +90,7 @@ dependencies {
         exclude module: 'third-jce'
     }
     compile('code.ponfee:commons-jedis:1.0-SNAPSHOT')
+    compile "ch.qos.logback:logback-classic:1.2.3"
     compile "code.ponfee:commons-compile:1.0-SNAPSHOT"
 
     compile "org.springframework:spring-tx:${springVersion}"
