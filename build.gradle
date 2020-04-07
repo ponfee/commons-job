@@ -1,4 +1,6 @@
 // gradlew clean build -x test
+// gradlew dependencies -q --configuration compile > D:/tree.txt
+// gradlew commons-job:dependencies
 
 /*
 ./gradlew -x test sonarqube \
@@ -98,6 +100,7 @@ dependencies {
         exclude module: 'cpdetector'
         exclude module: 'third-jce'
     }
+    compile('code.ponfee:commons-jedis:1.0-SNAPSHOT')
     compile "code.ponfee:commons-compile:1.0-SNAPSHOT"
 
     compile "org.springframework:spring-tx:${springVersion}"
@@ -127,6 +130,10 @@ dependencies {
     //}
 
     testCompile  'junit:junit:4.13'
+}
+
+configurations.all {
+    exclude group: 'org.apache.logging.log4j'
 }
 
 compileJava.dependsOn(processResources {

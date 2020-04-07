@@ -68,7 +68,6 @@
     </property>
   </bean>
 
-  <util:properties id="redisExpires" location="classpath*:META-INF/spring/redis.properties"/>
   <!-- <bean id="redisCacheManager" 
     class="org.springframework.cache.support.SimpleCacheManager">
     <property name="caches">
@@ -82,6 +81,8 @@
       </set>
     </property>
   </bean> -->
+
+  <util:properties id="redisExpires" location="classpath*:META-INF/spring/redis-expires.propreties"/>
   <bean id="redisCacheManager"
         class="org.springframework.data.redis.cache.RedisCacheManager"
         c:redisOperations-ref="redisTemplate" p:usePrefix="true">
