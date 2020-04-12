@@ -18,7 +18,7 @@ import code.ponfee.commons.jedis.spring.SpringRedisLock;
 import code.ponfee.commons.util.ObjectUtils;
 
 /**
- * Checks the server nodes whether alive for cluster
+ * Checks the server nodes whether alive on cluster
  * 
  * @author Ponfee
  */
