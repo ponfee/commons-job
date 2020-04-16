@@ -26,11 +26,11 @@ application-mvc.yml 页面mvc相关配置文件
 - sql-script/quartz_tables_mysql_innodb.sql<br/>
 - sql-script/job_tables_mysql.sql<br/>
 
-任务调度的两种方式（选择使用其中一个）：  
-- quartz方式：resources/spring/spring-quartz-job.xml<br/>
-- simply方式：resources/spring/spring-spy-job.xml<br/>
+任务调度引擎（任选其一）：  
+- quartz方式（三方）：resources/spring/spring-quartz-job.xml<br/>
+- simply方式（自研）：resources/spring/spring-spy-job.xml<br/>
 
-在resources/spring/spring-bean.xml文件中以上两者选（引入）其一
+在resources/spring/spring-bean.xml文件中以上两者任选（引入）其一
 
 ## Dockerfile使用步骤  
 1、使用gradle的bootRepackage进行打包  
@@ -79,8 +79,7 @@ app.sh脚本为快速启动应用和关闭应用的脚本，使用方法如下�
 5、一次任务调度作为一个实例并队列化执行
 
 
-
-###
+## Others
 1、新增、删除、启用、禁用、触发、并行、恢复
 2、调度、分发、分片、监控、扩容、失效转移
 3、优先级、任务依赖
