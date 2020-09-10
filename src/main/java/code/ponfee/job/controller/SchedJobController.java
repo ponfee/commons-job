@@ -1,24 +1,15 @@
 package code.ponfee.job.controller;
 
-import java.util.List;
-
-import javax.annotation.Resource;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import code.ponfee.commons.model.Page;
 import code.ponfee.commons.model.PageRequestParams;
 import code.ponfee.commons.model.Result;
 import code.ponfee.job.model.SchedJob;
 import code.ponfee.job.model.SchedLog;
 import code.ponfee.job.service.ISchedJobService;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Sched Job Controller
@@ -73,12 +64,12 @@ public class SchedJobController {
 
     @GetMapping("job/page")
     public Result<Page<SchedJob>> queryJobsForPage(PageRequestParams params) {
-        return schedJobService.queryJobsForPage(params.origin());
+        return schedJobService.queryJobsForPage(params.params());
     }
 
     @GetMapping("log/page")
     public Result<Page<SchedLog>> queryLogsForPage(PageRequestParams params) {
-        return schedJobService.queryLogsForPage(params.origin());
+        return schedJobService.queryLogsForPage(params.params());
     }
 
     // -------------------------------------------------------quartz sched job

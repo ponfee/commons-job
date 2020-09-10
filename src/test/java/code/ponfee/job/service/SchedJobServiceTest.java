@@ -1,9 +1,5 @@
 package code.ponfee.job.service;
 
-import java.io.IOException;
-
-import org.junit.Test;
-
 import code.ponfee.commons.io.Files;
 import code.ponfee.commons.model.PageRequestParams;
 import code.ponfee.commons.model.Result;
@@ -12,7 +8,9 @@ import code.ponfee.job.BaseTest;
 import code.ponfee.job.enums.TriggerType;
 import code.ponfee.job.handler.TestJobHandler;
 import code.ponfee.job.model.SchedJob;
-import code.ponfee.job.service.ISchedJobService;
+import org.junit.Test;
+
+import java.io.IOException;
 
 
 public class SchedJobServiceTest extends BaseTest<ISchedJobService> {
@@ -92,7 +90,7 @@ public class SchedJobServiceTest extends BaseTest<ISchedJobService> {
     @Test
     public void testQuery4Page() {
         PageRequestParams params = new PageRequestParams();
-        Result<?> result = getBean().queryJobsForPage(params.origin());
+        Result<?> result = getBean().queryJobsForPage(params.params());
         printJson(result);
     }
 
@@ -108,7 +106,7 @@ public class SchedJobServiceTest extends BaseTest<ISchedJobService> {
         //params.put("jobName", "test job");
         params.put("pageSize", 10);
         params.put("pageNum", 1000000);
-        Result<?> result = getBean().queryLogsForPage(params.origin());
+        Result<?> result = getBean().queryLogsForPage(params.params());
         printJson(result);
     }
 

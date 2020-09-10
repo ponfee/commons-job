@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.ImportResource;
 
 /**
@@ -17,9 +15,6 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication(exclude = {
     DataSourceAutoConfiguration.class,
     RedisAutoConfiguration.class
-})
-@ComponentScans({ // If not set, default current package and posterity
-    @ComponentScan("code.ponfee.job")
 })
 @ImportResource("classpath:spring/spring-bean.xml")
 @EnableCaching

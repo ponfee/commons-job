@@ -1,5 +1,9 @@
+// install gradlew: gradle wrapper
 // gradlew clean build -x test
-// gradlew dependencies -q --configuration compile > D:/tree.txt #gradlew commons-job:dependencies
+// gradlew dependencies -q --configuration compile > D:/tree.txt # gradlew commons-job:dependencies
+// spring-boot-gradle-plugin: gradlew bootRun
+// "apply plugin: 'org.springframework.boot'": Executable Spring jar package
+// gretty运行Web项目的插件
 
 /*
 ./gradlew -x test sonarqube \
@@ -83,11 +87,9 @@ dependencies {
         exclude module: 'hessian'
         exclude module: 'fst'
         exclude module: 'itextpdf'
-        exclude module: 'words-jdk16'
         exclude module: 'antlr'
         exclude module: 'chardet'
         exclude module: 'cpdetector'
-        exclude module: 'third-jce'
     }
     compile('code.ponfee:commons-jedis:1.0-SNAPSHOT')
     compile "ch.qos.logback:logback-classic:1.2.3"
